@@ -4,31 +4,31 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-//import com.example.webapp3.data.local.dao.AudioDao
+import com.example.webapp3.data.local.dao.AudioDao
 import com.example.webapp3.data.local.dao.GpsGoogleDao
 import com.example.webapp3.data.local.dao.GpsSensorsDao
-//import com.example.webapp3.data.local.dao.MediaDao
-//import com.example.webapp3.data.local.entity.AudioEntity
+import com.example.webapp3.data.local.dao.MediaDao
+import com.example.webapp3.data.local.entity.AudioEntity
 import com.example.webapp3.data.local.entity.GpsGoogleEntity
 import com.example.webapp3.data.local.entity.GpsSensorsEntity
-//import com.example.webapp3.data.local.entity.MediaEntity
+import com.example.webapp3.data.local.entity.MediaEntity
 
 @Database(
     entities = [
         GpsGoogleEntity::class,
         GpsSensorsEntity::class,
-        //MediaEntity::class,
-        //AudioEntity::class
+        MediaEntity::class,
+        AudioEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class DemoDataDatabase : RoomDatabase() {
 
     abstract fun gpsGoogleDao(): GpsGoogleDao
     abstract fun gpsSensorsDao(): GpsSensorsDao
-//    abstract fun mediaDao(): MediaDao
-//    abstract fun audioDao(): AudioDao
+    abstract fun mediaDao(): MediaDao
+    abstract fun audioDao(): AudioDao
 
     companion object {
         @Volatile private var INSTANCE: DemoDataDatabase? = null

@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             )
 
             val isDarkModePref by sessionVm.isDarkMode.collectAsState()
-            val darkTheme = isDarkModePref ?: isSystemInDarkTheme()
+            val darkTheme      = isDarkModePref ?: isSystemInDarkTheme()
 
             AppTheme(darkTheme = darkTheme) {
                 Navigation()

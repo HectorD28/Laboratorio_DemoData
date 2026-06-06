@@ -1,20 +1,9 @@
 package com.example.webapp3.ui.screens
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -22,33 +11,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.AudioFile
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.filled.Videocam
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,20 +21,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.webapp3.DemoData
-//import com.example.webapp3.data.local.entity.AudioEntity
+import com.example.webapp3.data.local.entity.AudioEntity
 import com.example.webapp3.data.local.entity.GpsGoogleEntity
 import com.example.webapp3.data.local.entity.GpsSensorsEntity
-//import com.example.webapp3.data.local.entity.MediaEntity
-//import com.example.webapp3.data.local.entity.MediaType
+import com.example.webapp3.data.local.entity.MediaEntity
+import com.example.webapp3.data.local.entity.MediaType
 import com.example.webapp3.ui.viewmodel.SessionViewModel
-//import com.example.webapp3.ui.viewmodel.SyncViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -78,10 +41,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun ProfileScreen(
-    onLogout: () -> Unit,
-    username: String? = null
-) {
+fun ProfileScreen(onLogout: () -> Unit, username: String? = null) {
     val app = LocalContext.current.applicationContext as DemoData
     val sessionVm: SessionViewModel = viewModel(
         factory = SessionViewModel.Factory(app.sessionManager)
@@ -91,15 +51,15 @@ fun ProfileScreen(
 
     when (viewState) {
         ProfileViewState.Menu -> ProfileMenu(
-            username = username,
-            onLogout = onLogout,
-            onNavigateToProfile = { viewState = ProfileViewState.MyProfile },
+            username            = username,
+            onLogout            = onLogout,
+            onNavigateToProfile  = { viewState = ProfileViewState.MyProfile },
             onNavigateToActivity = { viewState = ProfileViewState.MyActivity }
         )
         ProfileViewState.MyProfile -> MyProfileScreen(
-            username = username,
+            username  = username,
             sessionVm = sessionVm,
-            onBack = { viewState = ProfileViewState.Menu }
+            onBack    = { viewState = ProfileViewState.Menu }
         )
         ProfileViewState.MyActivity -> MyActivityScreen(
             onBack = { viewState = ProfileViewState.Menu }
@@ -108,8 +68,8 @@ fun ProfileScreen(
 }
 
 private sealed class ProfileViewState {
-    object Menu : ProfileViewState()
-    object MyProfile : ProfileViewState()
+    object Menu       : ProfileViewState()
+    object MyProfile  : ProfileViewState()
     object MyActivity : ProfileViewState()
 }
 
@@ -123,48 +83,23 @@ private fun ProfileMenu(
     var mostrarConfirmacion by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState()),
+        modifier            = Modifier.fillMaxSize().padding(24.dp).verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            Icons.Default.Person,
-            contentDescription = null,
-            modifier = Modifier.size(72.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
+        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(72.dp), tint = MaterialTheme.colorScheme.primary)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = username ?: "Usuario",
-            style = MaterialTheme.typography.headlineMedium
-        )
+        Text(text = username ?: "Usuario", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(32.dp))
 
-        MenuOption(
-            icon = Icons.Default.Person,
-            title = "Mi Perfil",
-            subtitle = "Ver metadatos del usuario",
-            onClick = onNavigateToProfile
-        )
+        MenuOption(icon = Icons.Default.Person,  title = "Mi Perfil",    subtitle = "Ver metadatos del usuario",                  onClick = onNavigateToProfile)
         Spacer(modifier = Modifier.height(12.dp))
-        MenuOption(
-            icon = Icons.Default.History,
-            title = "Mi Actividad",
-            subtitle = "Registros locales de GNSS y multimedia",
-            onClick = onNavigateToActivity
-        )
+        MenuOption(icon = Icons.Default.History, title = "Mi Actividad", subtitle = "Registros locales de GNSS y multimedia",     onClick = onNavigateToActivity)
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { mostrarConfirmacion = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error
-            )
+            onClick  = { mostrarConfirmacion = true },
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            colors   = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
         ) {
             Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = null)
             Spacer(modifier = Modifier.size(8.dp))
@@ -178,26 +113,16 @@ private fun ProfileMenu(
 }
 
 @Composable
-private fun MenuOption(
-    icon: ImageVector,
-    title: String,
-    subtitle: String,
-    onClick: () -> Unit
-) {
+private fun MenuOption(icon: ImageVector, title: String, subtitle: String, onClick: () -> Unit) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+        colors   = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleMedium)
+                Text(title,    style = MaterialTheme.typography.titleMedium)
                 Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Icon(Icons.Default.ChevronRight, contentDescription = null)
@@ -206,32 +131,21 @@ private fun MenuOption(
 }
 
 @Composable
-private fun MyProfileScreen(
-    username: String?,
-    sessionVm: SessionViewModel,
-    onBack: () -> Unit
-) {
+private fun MyProfileScreen(username: String?, sessionVm: SessionViewModel, onBack: () -> Unit) {
     val isDarkModePref by sessionVm.isDarkMode.collectAsStateWithLifecycle()
     val isDark = isDarkModePref ?: isSystemInDarkTheme()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(24.dp).verticalScroll(rememberScrollState())) {
         Text("Mi Perfil", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(24.dp))
 
-        ProfileMetadataItem("Username", username ?: "N/A")
-        ProfileMetadataItem("Rol", "Administrador / Operador")
+        ProfileMetadataItem("Username",       username ?: "N/A")
+        ProfileMetadataItem("Rol",            "Administrador / Operador")
+        ProfileMetadataItem("Directorio Local", LocalContext.current.filesDir.absolutePath)
 
-        // ── Opción Modo Noche ──
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            modifier              = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            verticalAlignment     = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -240,28 +154,24 @@ private fun MyProfileScreen(
                 Column {
                     Text("Modo Noche", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        if (isDarkModePref == null) "Siguiendo al sistema" else if (isDark) "Activado" else "Desactivado",
+                        if (isDarkModePref == null) "Siguiendo al sistema"
+                        else if (isDark) "Activado" else "Desactivado",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
-            Switch(
-                checked = isDark,
-                onCheckedChange = { sessionVm.setDarkMode(it) }
-            )
+            Switch(checked = isDark, onCheckedChange = { sessionVm.setDarkMode(it) })
         }
         HorizontalDivider()
 
         Spacer(modifier = Modifier.height(16.dp))
-        ProfileMetadataItem("Dispositivo", "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
-        ProfileMetadataItem("Android Version", android.os.Build.VERSION.RELEASE)
-        ProfileMetadataItem("API Level", android.os.Build.VERSION.SDK_INT.toString())
+        ProfileMetadataItem("Dispositivo",      "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
+        ProfileMetadataItem("Android Version",  android.os.Build.VERSION.RELEASE)
+        ProfileMetadataItem("API Level",        android.os.Build.VERSION.SDK_INT.toString())
 
         Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-            Text("Volver")
-        }
+        Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) { Text("Volver") }
     }
 }
 
@@ -276,43 +186,27 @@ private fun ProfileMetadataItem(label: String, value: String) {
 
 @Composable
 private fun MyActivityScreen(onBack: () -> Unit) {
-    val context = LocalContext.current
-    val app = context.applicationContext as DemoData
+    val context  = LocalContext.current
+    val app      = context.applicationContext as DemoData
 
-    val gpsRepo = app.gpsRepository
-//    val mediaRepo = app.mediaRepository
-//    val audioRepo = app.audioRepository
+    val googlePoints  by app.gpsRepository.googlePoints.collectAsStateWithLifecycle(emptyList())
+    val sensorsPoints by app.gpsRepository.sensorsPoints.collectAsStateWithLifecycle(emptyList())
+    val allMedia      by app.mediaRepository.allMedia.collectAsStateWithLifecycle(emptyList())
+    val allAudios     by app.audioRepository.allAudios.collectAsStateWithLifecycle(emptyList())
 
-    val googlePoints by gpsRepo.googlePoints.collectAsStateWithLifecycle(emptyList())
-    val sensorsPoints by gpsRepo.sensorsPoints.collectAsStateWithLifecycle(emptyList())
-//  val allMedia by mediaRepo.allMedia.collectAsStateWithLifecycle(emptyList())
-//    val allAudios by audioRepo.allAudios.collectAsStateWithLifecycle(emptyList())
-
-    // Optimizamos usando un estado que se actualiza asíncronamente
     var combinedItems by remember { mutableStateOf<List<ActivityItem>>(emptyList()) }
 
-    LaunchedEffect(googlePoints, sensorsPoints) {
+    LaunchedEffect(googlePoints, sensorsPoints, allMedia, allAudios) {
         withContext(Dispatchers.Default) {
             val items = mutableListOf<ActivityItem>()
-            items.addAll(googlePoints.map { ActivityItem.GpsGoogle(it) })
+            items.addAll(googlePoints.map  { ActivityItem.GpsGoogle(it) })
             items.addAll(sensorsPoints.map { ActivityItem.GpsSensors(it) })
+            items.addAll(allMedia.map      { ActivityItem.Media(it) })
+            items.addAll(allAudios.map     { ActivityItem.Audio(it) })
             items.sortByDescending { it.timestamp }
             combinedItems = items
         }
     }
-
-
-//    LaunchedEffect(googlePoints, sensorsPoints, allMedia, allAudios) {
-//        withContext(Dispatchers.Default) {
-//            val items = mutableListOf<ActivityItem>()
-//            items.addAll(googlePoints.map { ActivityItem.GpsGoogle(it) })
-//            items.addAll(sensorsPoints.map { ActivityItem.GpsSensors(it) })
-//            items.addAll(allMedia.map { ActivityItem.Media(it) })
-//            items.addAll(allAudios.map { ActivityItem.Audio(it) })
-//            items.sortByDescending { it.timestamp }
-//            combinedItems = items
-//        }
-//    }
 
     var detailItem by remember { mutableStateOf<ActivityItem?>(null) }
 
@@ -342,24 +236,24 @@ sealed class ActivityItem {
 
     data class GpsGoogle(val data: GpsGoogleEntity) : ActivityItem() {
         override val timestamp = data.timestamp
-        override val label = "GNSS Google"
-        override val icon = Icons.Default.LocationOn
+        override val label     = "GNSS Google"
+        override val icon      = Icons.Default.LocationOn
     }
     data class GpsSensors(val data: GpsSensorsEntity) : ActivityItem() {
         override val timestamp = data.timestamp
-        override val label = "GNSS Sensor"
-        override val icon = Icons.Default.LocationOn
+        override val label     = "GNSS Sensor"
+        override val icon      = Icons.Default.LocationOn
     }
-//    data class Media(val data: MediaEntity) : ActivityItem() {
-//        override val timestamp = data.timestamp
-//        override val label = data.type
-//        override val icon = if (data.type == MediaType.PHOTO.name) Icons.Default.PhotoCamera else Icons.Default.Videocam
-//    }
-//    data class Audio(val data: AudioEntity) : ActivityItem() {
-//        override val timestamp = data.timestamp
-//        override val label = "Audio"
-//        override val icon = Icons.Default.AudioFile
-//    }
+    data class Media(val data: MediaEntity) : ActivityItem() {
+        override val timestamp = data.timestamp
+        override val label     = data.type
+        override val icon      = if (data.type == MediaType.PHOTO.name) Icons.Default.PhotoCamera else Icons.Default.Videocam
+    }
+    data class Audio(val data: AudioEntity) : ActivityItem() {
+        override val timestamp = data.timestamp
+        override val label     = "Audio"
+        override val icon      = Icons.Default.AudioFile
+    }
 }
 
 @Composable
@@ -377,7 +271,7 @@ private fun ActivityRow(item: ActivityItem, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = if (isNoSignal) "${item.label} (Sin señal)" else item.label,
+                    text  = if (isNoSignal) "${item.label} (Sin señal)" else item.label,
                     style = MaterialTheme.typography.titleSmall,
                     color = if (isNoSignal) MaterialTheme.colorScheme.error else Color.Unspecified
                 )
@@ -390,13 +284,13 @@ private fun ActivityRow(item: ActivityItem, onClick: () -> Unit) {
 
 @Composable
 private fun ActivityDetailDialog(item: ActivityItem, onDismiss: () -> Unit) {
-    val context = LocalContext.current
+    val context    = LocalContext.current
     val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(item.label) },
-        text = {
+        text  = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text("Fecha: ${dateFormat.format(Date(item.timestamp))}")
                 Spacer(modifier = Modifier.height(8.dp))
@@ -409,7 +303,7 @@ private fun ActivityDetailDialog(item: ActivityItem, onDismiss: () -> Unit) {
                         item.data.speed?.let { Text("Velocidad: $it m/s") }
                     }
                     is ActivityItem.GpsSensors -> {
-                        if (item.data.latitude != null && item.data.longitude != null) {
+                        if (item.data.latitude != null) {
                             Text("Lat: ${item.data.latitude}")
                             Text("Lon: ${item.data.longitude}")
                             item.data.altitude?.let { Text("Altitud: ${it}m") }
@@ -419,64 +313,60 @@ private fun ActivityDetailDialog(item: ActivityItem, onDismiss: () -> Unit) {
                         }
                         Text("Provider: ${item.data.provider}")
                     }
-//                    is ActivityItem.Media -> {
-//                        Text("Tamaño: ${item.data.sizeBytes / 1024} KB")
-//                        Spacer(modifier = Modifier.height(8.dp))
-//                        AsyncImage(
-//                            model = File(item.data.filePath),
-//                            contentDescription = null,
-//                            modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(8.dp)),
-//                            contentScale = ContentScale.Crop
-//                        )
-//                        Spacer(modifier = Modifier.height(16.dp))
-//                        Button(onClick = { openFile(context, item.data.filePath, if (item.data.type == MediaType.PHOTO.name) "image/*" else "video/*") }) {
-//                            Text(if (item.data.type == MediaType.PHOTO.name) "Ver Foto" else "Reproducir Video")
-//                        }
-//                    }
-//                    is ActivityItem.Audio -> {
-//                        Text("Duración: ${item.data.durationMs / 1000}s")
-//                        Text("Tamaño: ${item.data.sizeBytes / 1024} KB")
-//                        Spacer(modifier = Modifier.height(16.dp))
-//                        Button(onClick = { openFile(context, item.data.filePath, "audio/*") }) {
-//                            Text("Reproducir Audio")
-//                        }
-//                    }
+                    is ActivityItem.Media -> {
+                        Text("Tamaño: ${item.data.sizeBytes / 1024} KB")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        AsyncImage(
+                            model              = File(item.data.filePath),
+                            contentDescription = null,
+                            modifier           = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(8.dp)),
+                            contentScale       = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = {
+                            openFile(context, item.data.filePath,
+                                if (item.data.type == MediaType.PHOTO.name) "image/*" else "video/*")
+                        }) {
+                            Text(if (item.data.type == MediaType.PHOTO.name) "Ver Foto" else "Reproducir Video")
+                        }
+                    }
+                    is ActivityItem.Audio -> {
+                        Text("Duración: ${item.data.durationMs / 1000}s")
+                        Text("Tamaño: ${item.data.sizeBytes / 1024} KB")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = { openFile(context, item.data.filePath, "audio/*") }) {
+                            Text("Reproducir Audio")
+                        }
+                    }
                 }
             }
         },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cerrar") }
-        }
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Cerrar") } }
     )
 }
 
 private fun openFile(context: android.content.Context, path: String, mimeType: String) {
     try {
-        val file = File(path)
-        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        val uri    = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", File(path))
         val intent = Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(uri, mimeType)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         context.startActivity(intent)
-    } catch (e: Exception) {
-        // Log error
-    }
+    } catch (_: Exception) { }
 }
 
 @Composable
 private fun LogoutDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("¿Confirmar cierre de sesión?") },
-        text = { Text("Volverás a la pantalla de login. Tus datos locales se conservan.") },
+        title   = { Text("¿Confirmar cierre de sesión?") },
+        text    = { Text("Volverás a la pantalla de login. Tus datos locales se conservan.") },
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text("Sí, cerrar sesión", color = MaterialTheme.colorScheme.error)
             }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
